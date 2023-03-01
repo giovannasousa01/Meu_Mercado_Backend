@@ -1,11 +1,16 @@
 
 import express from 'express';
+import cors from 'cors';
 
 const app = express();
 
 // Middlewares JSON - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     app.use(express.json());
+
+// Middleware CORS - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+
+    app.use(cors());
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
