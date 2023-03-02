@@ -39,38 +39,36 @@ const db = mysql.createPool({
 
     //URI Params...
     app.get("/usuarios/:id", function(request, response) {
-        let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, " +
-        "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro from usuario where id_usuario = ?;" ;
+        let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
+        query += "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro ";
+        query += "from usuario where id_usuario = ?;";
         db.query(query,[request.params.id], function(error, result) {
             if (error) {
                 return response.status(500).send(error);
             } else {
                 console.log(result);
-                return response.status(200).json(result);
-                
+                return response.status(result.lenght > 0 ? 200 : 404).json(result[0]);
             }
         }); 
     });
 
-    app.post("/usuarios", function(request, response) {
+    app.post("/usuarios/login", function(request, response) {
+        let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
+        query += "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro ";
+        query += "from usuario where email = ? and senha = ?;";
+
+        db.query(query, [request.body.email, request.body.senha], function(error, result){
+            if (error) {
+                return response.status(500).send(error);
+            } else {
+                return response.status(result.lenght > 0 ? 200 : 401).json(result[0]);
+            }
+        });
+
         const body = request.body;
         console.log(body);
-        return response.send("Cadastrando cliente: " + body.nome + 
-        " - Email: " + body.email + 
-        " - Senha: " + body.senha);
     });
 
-    app.put("/clientes", function(request, response) {
-        return response.send("Alterando um cliente com PUT");
-    });
-
-    app.patch("/clientes", function(request, response) {
-        return response.send("Alterando um cliente com PATCH");
-    });
-
-    app.delete("/clientes", function(request, response) {
-        return response.send("Excluindo cliente");
-    });
 
 // --------------------------------------------------------------------------------------------
 
