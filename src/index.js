@@ -1,18 +1,9 @@
 
 import express from 'express';
 import cors from 'cors';
-import mysql from 'mysql2';
+import db from './config/database.js';
 
 const app = express();
-
-
-// Conexão com o banco de dados...
-const db = mysql.createPool({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database: "meu_mercado"
-});
 
 // Middlewares JSON - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -22,7 +13,7 @@ const db = mysql.createPool({
 
     app.use(cors());
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     // Query Params...
     app.get("/usuarios", function(request, response) {
@@ -36,6 +27,8 @@ const db = mysql.createPool({
             }
         }); 
     });
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     //URI Params...
     app.get("/usuarios/:id", function(request, response) {
@@ -51,6 +44,8 @@ const db = mysql.createPool({
             }
         }); 
     });
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
     app.post("/usuarios/login", function(request, response) {
         let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
