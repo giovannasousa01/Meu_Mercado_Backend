@@ -10,9 +10,9 @@ controllerUsuarios.use(express.json());
 
 // Listando todos os usuarios...
 controllerUsuarios.get("/usuarios", function(request, response) {
-    let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, " +
+    let script = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, " +
     "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro from usuario";
-    db.query(query, function(error, result) {
+    db.query(script, function(error, result) {
         if (error) {
             return response.status(500).send(error);
         } else {
@@ -27,15 +27,14 @@ controllerUsuarios.get("/usuarios", function(request, response) {
 
 //Listando um único usuário....
 controllerUsuarios.get("/usuarios/:id_usuario", function(request, response) {
-    let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
-    query += "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro ";
-    query += "from usuario where id_usuario = ?;";
-    db.query(query,[request.params.id], function(error, result) {
+    let script = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
+    script += "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro ";
+    script += "from usuario where id_usuario = ?";
+    db.query(script,[request.params.id_usuario], function(error, result) {
         if (error) {
             return response.status(500).send(error);
         } else {
-            console.log(result);
-            return response.status(result.lenght > 0 ? 200 : 404).json(result[0]);
+            return response.status(result.lenght <= 0 ? 404 : 200).json(result[0]);
         }
     }); 
 });
@@ -44,16 +43,15 @@ controllerUsuarios.get("/usuarios/:id_usuario", function(request, response) {
 
 // Fazendo login de um usuário...
 controllerUsuarios.post("/usuarios/login", function(request, response) {
-    let query = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
-    query += "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro ";
-    query += "from usuario where email = ? and senha = ?;";
+    let script = "select id_usuario, nome, email, senha, endereco, bairro, cidade, uf, cep, ";
+    script += "DATE_FORMAT(dt_cadastro, '%d/%m/%Y %H:%i:%s') AS dt_cadastro ";
+    script += "from usuario where email = ? and senha = ?;";
 
-    db.query(query, [request.body.email, request.body.senha], function(error, result){
+    db.query(script, [request.body.email, request.body.senha], function(error, result){
         if (error) {
             return response.status(500).send(error);
         } else {
-            
-            return response.status(result.lenght > 0 ? 200 : 401).json(result[0]);
+            return response.status(result.lenght <= 0 ? 401 : 200).json(result[0]);
         }
     });
     
@@ -63,10 +61,10 @@ controllerUsuarios.post("/usuarios/login", function(request, response) {
 
 // Fazendo cadastro de um usuário...
 controllerUsuarios.post("/usuarios/cadastro", function(request, response) {
-    let query = "insert into usuario(nome, email, senha, endereco, bairro, cidade, uf, cep, dt_cadastro)";
-    query += "values (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
+    let script = "insert into usuario(nome, email, senha, endereco, bairro, cidade, uf, cep, dt_cadastro)";
+    script += "values (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP())";
 
-    db.query(query, [
+    db.query(script, [
         request.body.nome, 
         request.body.email, 
         request.body.senha,
@@ -89,11 +87,11 @@ controllerUsuarios.post("/usuarios/cadastro", function(request, response) {
 
 // Alterando um usuário...
 controllerUsuarios.put("/usuarios/:id_usuario", function(request, response) {
-    let query = "update usuario set nome = ?, email = ?, senha = ?, endereco = ?, ";
-    query += "bairro = ?, cidade = ?, uf = ?, cep = ? ";
-    query += "where id_usuario = ? ";
+    let script = "update usuario set nome = ?, email = ?, senha = ?, endereco = ?, ";
+    script += "bairro = ?, cidade = ?, uf = ?, cep = ? ";
+    script += "where id_usuario = ? ";
 
-    db.query(query, [
+    db.query(script, [
         request.body.nome, 
         request.body.email, 
         request.body.senha,
@@ -114,21 +112,6 @@ controllerUsuarios.put("/usuarios/:id_usuario", function(request, response) {
 });
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-
-// Excluindo um usuário...
-controllerUsuarios.delete("/usuarios/:id_usuario", function(request, response) {
-    let query = "delete from usuario where id_usuario = ?";
-
-    db.query(query, [request.params.id_usuario], function(error, result){
-        if (error) {
-            return response.status(500).send(error);
-        } else {
-            return response.status(200).json({id_usuario: request.params.id_usuario});
-        }
-    });
-    
-});
-
 
 
 export default controllerUsuarios;
