@@ -2,6 +2,8 @@
 import express from 'express';
 import cors from 'cors';
 import controllerUsuarios from './controllers/usuario_controllers.js';
+import controllerMercado from './controllers/mercado_controllers.js';
+import controllerCategorias from './controllers/categorias_controllers.js';
 
 const app = express();
 
@@ -17,6 +19,8 @@ const app = express();
 
 // Controllers...
     app.use(controllerUsuarios);
+    app.use(controllerMercado);
+    app.use(controllerCategorias);
     
 // --------------------------------------------------------------------------------------------
 
