@@ -115,7 +115,7 @@ controllerUsuarios.put("/usuarios/:id_usuario", function(request, response) {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 
-// Alterando um usuário...
+// Excluindo um usuário...
 controllerUsuarios.delete("/usuarios/:id_usuario", function(request, response) {
     let query = "delete from usuario where id_usuario = ?";
 
